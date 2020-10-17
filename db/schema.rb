@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 2020_10_17_190636) do
     t.inet "ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["ip"], name: "index_ip_visits_on_ip"
+    t.index ["ip"], name: "index_ip_visits_on_ip", unique: true
   end
 
 end
