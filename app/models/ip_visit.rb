@@ -1,0 +1,2 @@
+class IpVisit < ApplicationRecord
+end
