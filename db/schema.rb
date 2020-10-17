@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_17_182152) do
+ActiveRecord::Schema.define(version: 2020_10_17_190636) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 2020_10_17_182152) do
     t.inet "ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["ip"], name: "index_ip_visits_on_ip"
   end
 
 end
