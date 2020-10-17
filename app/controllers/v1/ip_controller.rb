@@ -1,4 +1,5 @@
-require 'ipaddr'
+$LOAD_PATH << Rails.root
+require 'services/ip_service'
 
 module V1
   class IpController < ApplicationController
@@ -6,28 +7,17 @@ module V1
     skip_before_action :validate_ip_payload_size, only: [:distinct]
 
     def log
-      ips = request.params['ips'].map {|ip| IpVisit.new(ip: ip) }
-      IpVisit.import(ips, on_duplicate_key_ignore: true)
+      IPService.new.record_ips(ips: request.params['ips'])
       head 201
     end
 
     def seen
-      stored = IpVisit.where(ip: request.params['ips']).select(:ip).reduce({}) do |acc, ip|
-        acc[ip.ip.to_i] = true
-        acc
-      end
-
-      results = request.params['ips'].reduce({}) do |acc, ip|
-        acc[ip] = stored.key?(IPAddr.new(ip).to_i)
-        acc
-      end
+      results = IPService.new.have_seen?(ips: request.params['ips'])
       render json: results
     end
 
     def distinct
-      render json:
-        IpVisit.connection.execute("SELECT COUNT(*) FROM (SELECT DISTINCT(ip) FROM ip_visits) as dist").to_a[0]
-
+      render json: IPService.new.count_unique
     end
 
     private
